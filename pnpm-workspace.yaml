@@ -1,0 +1,7 @@
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  simple-git-hooks: true
+  unrs-resolver: true
+minimumReleaseAgeExclude:
+  - '@vitejs/plugin-vue@6.0.8'

@@ -1,0 +1,116 @@
+{
+  "name": "@rhapsodic/histoire-kit",
+  "version": "1.0.0",
+  "description": "Composable Histoire configuration, setup, and story helpers for Rhapsodic projects",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhapsodic-dev/histoire-kit.git"
+  },
+  "contributors": [
+    {
+      "name": "Svyatoslav Fyodorov",
+      "email": "intelrug@gmail.com",
+      "url": "https://github.com/intelrug"
+    },
+    {
+      "name": "TrenLok",
+      "email": "arediveev@gmail.com",
+      "url": "https://github.com/trenlok"
+    }
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./setup": {
+      "types": "./dist/setup.d.ts",
+      "import": "./dist/setup.js"
+    },
+    "./config/vue": {
+      "types": "./dist/config/vue.d.ts",
+      "import": "./dist/config/vue.js"
+    },
+    "./config/nuxt": {
+      "types": "./dist/config/nuxt.d.ts",
+      "import": "./dist/config/nuxt.js"
+    }
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "check": "pnpm lint && pnpm build",
+    "format": "pnpm run format:scripts && pnpm run format:styles",
+    "format:scripts": "eslint . --cache --fix",
+    "format:styles": "stylelint \"**/*.{css,scss,vue}\" --cache --allow-empty-input --fix",
+    "hooks:install": "pnpm exec simple-git-hooks",
+    "lint": "pnpm run lint:scripts && pnpm run lint:styles",
+    "lint:scripts": "eslint . --cache",
+    "lint:styles": "stylelint \"**/*.{css,scss,vue}\" --cache --allow-empty-input",
+    "prepare": "pnpm run hooks:install",
+    "release": "bumpp"
+  },
+  "dependencies": {
+    "@rhapsodic/bem-classnames-vue": "2.1.0"
+  },
+  "peerDependencies": {
+    "@histoire/plugin-nuxt": "^1.0.0-beta.1",
+    "@histoire/plugin-vue": "^1.0.0-beta.1",
+    "histoire": "^1.0.0-beta.1",
+    "vue": "^3.5.26"
+  },
+  "peerDependenciesMeta": {
+    "@histoire/plugin-nuxt": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
+    "@histoire/plugin-nuxt": "1.0.0-beta.1",
+    "@histoire/plugin-vue": "1.0.0-beta.1",
+    "@rhapsodic/eslint-config": "^1.1.0",
+    "@rhapsodic/stylelint-config": "^1.0.1",
+    "@types/node": "^24.0.0",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "bumpp": "^11.1.0",
+    "eslint": "^10.7.0",
+    "eslint-plugin-vuejs-accessibility": "^2.5.0",
+    "histoire": "1.0.0-beta.1",
+    "lint-staged": "^17.0.8",
+    "sass-embedded": "^1.100.0",
+    "simple-git-hooks": "^2.13.1",
+    "stylelint": "^17.14.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.6",
+    "vite-plugin-dts": "^5.0.3",
+    "vite-plugin-lib-inject-css": "^2.2.2",
+    "vue": "^3.5.39"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=24.17.0",
+    "pnpm": ">=11"
+  },
+  "simple-git-hooks": {
+    "commit-msg": "pnpm exec commitlint --edit",
+    "pre-commit": "pnpm exec lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,ts,vue}": "eslint --cache --fix",
+    "*.{css,scss,vue}": "stylelint --allow-empty-input --cache --fix"
+  },
+  "packageManager": "pnpm@11.7.0+sha512.19cc852c120c7125760f2443ee6be0ca5b40f9f50598de1a09a1f177503e010e57c23c77646e01e761de59bf874fb22a3398c33ab9691fc13eb946b6f0f4d620"
+}

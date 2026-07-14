@@ -1,0 +1,23 @@
+dist/
+node_modules/
+*.tgz
+*.log
+.env
+package-lock.json
+.DS_Store
+
+# Yarn
+.yarn/cache
+.yarn/*state*
+
+# Local History
+.history
+
+# VSCode
+.vscode/
+
+# JetBrains/WebStorm
+.idea/
+
+.eslintcache
+.stylelintcache
