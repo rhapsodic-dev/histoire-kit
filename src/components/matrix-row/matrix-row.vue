@@ -29,7 +29,7 @@ const classNames = useBMC(props, 'hst-kit-matrix-row', {
   align-items: center;
 
   &_state_header {
-    color: var(--hst-kit-text-muted, var(--rui-text-muted, #a1a1aa));
+    color: var(--hst-kit-text-muted, #a1a1aa);
     font-size: 12px;
     text-align: center;
   }

@@ -31,8 +31,13 @@ const rowGap = computed(() => `${props.rowGap}px`);
   --hst-kit-matrix-columns: v-bind(columns);
   --hst-kit-matrix-column-gap: v-bind(columnGap);
 
-  display: flex;
-  flex-direction: column;
-  gap: v-bind(rowGap);
+  display: grid;
+  grid-template-columns: var(--hst-kit-matrix-columns);
+  gap: v-bind(rowGap) var(--hst-kit-matrix-column-gap);
+  place-items: center start;
+
+  :deep(.hst-kit-matrix-row_header > *) {
+    justify-self: stretch;
+  }
 }
 </style>

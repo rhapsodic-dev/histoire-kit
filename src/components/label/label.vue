@@ -1,5 +1,7 @@
 <template>
-  <span :class="classNames"><slot /></span>
+  <span :class="classNames">
+    <slot />
+  </span>
 </template>
 
 <script setup lang="ts">
@@ -14,7 +16,7 @@ const classNames = useBMC({}, 'hst-kit-label', {});
 
 <style scoped lang="scss">
 .hst-kit-label {
-  color: var(--hst-kit-text-muted, var(--rui-text-muted, #a1a1aa));
+  color: var(--hst-kit-text-muted, #a1a1aa);
   font-size: 13px;
   text-transform: capitalize;
 }

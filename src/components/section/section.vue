@@ -36,7 +36,7 @@ const headingTag = computed(() => `h${props.level}`);
 
   &__title {
     margin: 0;
-    color: var(--hst-kit-text-primary, var(--rui-text-primary, #f4f4f5));
+    color: var(--hst-kit-text-primary, #f4f4f5);
     font-size: 15px;
     text-transform: capitalize;
   }
