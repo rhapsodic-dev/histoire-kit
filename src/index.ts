@@ -32,6 +32,7 @@ declare module 'vue' {
     HstKitOverview: typeof import('./registration').HstKitOverview;
     HstKitPreview: typeof import('./registration').HstKitPreview;
     HstKitSection: typeof import('./registration').HstKitSection;
+    HstKitStoryWrapper: typeof import('./registration').HstKitStoryWrapper;
   }
 }
 
@@ -45,4 +46,5 @@ export {
   HstKitOverview,
   HstKitPreview,
   HstKitSection,
+  HstKitStoryWrapper,
 } from './registration';

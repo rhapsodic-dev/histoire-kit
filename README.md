@@ -73,6 +73,7 @@ export const setupVue3 = defineHistoireKitSetup({
   components: {
     HstKitLabel: LocalLabel,
     HstKitPreview: false,
+    HstKitStoryWrapper: LocalStoryWrapper,
   },
   setup({ app }) {
     app.provide('project', projectContext);
@@ -81,6 +82,7 @@ export const setupVue3 = defineHistoireKitSetup({
 ```
 
 Use `components: false` to disable all global helper registration.
+Set `HstKitStoryWrapper` to `false` to disable the default story padding.
 
 ## Components
 
@@ -91,6 +93,8 @@ The setup registers:
 - `HstKitMatrix` and `HstKitMatrixRow` for aligned state comparisons;
 - `HstKitLabel` for quiet workbench labels;
 - `HstKitPreview` for constrained component previews.
+- `HstKitStoryWrapper` for the default padded story canvas, applied automatically with
+  Histoire's `addWrapper` setup API.
 
 Every component is also available as a named export from `@rhapsodic/histoire-kit`.
 Its named `HstKit*Props` contract is exported from the package root when the component accepts props.

@@ -15,7 +15,13 @@ export function defineHistoireKitSetup(optionsOrSetup: HistoireKitSetupInput = {
     : optionsOrSetup;
 
   return defineSetupVue3(async (context) => {
-    installHistoireKit(context.app, options);
+    const components = installHistoireKit(context.app, options);
+
+    const storyWrapper = components?.HstKitStoryWrapper;
+    if (storyWrapper) {
+      context.addWrapper(storyWrapper);
+    }
+
     await options.setup?.(context);
   });
 }

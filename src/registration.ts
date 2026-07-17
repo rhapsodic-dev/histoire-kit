@@ -8,6 +8,7 @@ import HstKitMatrixRow from './components/matrix-row';
 import HstKitOverview from './components/overview';
 import HstKitPreview from './components/preview';
 import HstKitSection from './components/section';
+import HstKitStoryWrapper from './components/story-wrapper';
 
 const components = {
   HstKitExample,
@@ -19,7 +20,13 @@ const components = {
   HstKitOverview,
   HstKitPreview,
   HstKitSection,
+  HstKitStoryWrapper,
 } as const;
+
+export type HistoireKitComponents = Record<
+  keyof typeof components,
+  Component | false
+>;
 
 export type HistoireKitComponentOverrides = Partial<Record<
   keyof typeof components,
@@ -33,12 +40,12 @@ export interface HistoireKitInstallOptions {
 export function installHistoireKit(
   app: App,
   options: HistoireKitInstallOptions = {},
-): void {
+): HistoireKitComponents | undefined {
   if (options.components === false) {
     return;
   }
 
-  const configuredComponents: Record<string, Component | false> = {
+  const configuredComponents: HistoireKitComponents = {
     ...components,
     ...options.components,
   };
@@ -48,6 +55,8 @@ export function installHistoireKit(
       app.component(name, component);
     }
   }
+
+  return configuredComponents;
 }
 
 export { default as HstKitExample } from './components/example';
@@ -59,3 +68,4 @@ export { default as HstKitMatrixRow } from './components/matrix-row';
 export { default as HstKitOverview } from './components/overview';
 export { default as HstKitPreview } from './components/preview';
 export { default as HstKitSection } from './components/section';
+export { default as HstKitStoryWrapper } from './components/story-wrapper';
