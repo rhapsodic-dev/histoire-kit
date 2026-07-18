@@ -41,6 +41,10 @@
     "./config/nuxt": {
       "types": "./dist/config/nuxt.d.ts",
       "import": "./dist/config/nuxt.js"
+    },
+    "./config/nuxt-layers": {
+      "types": "./dist/config/nuxt-layers.d.ts",
+      "import": "./dist/config/nuxt-layers.js"
     }
   },
   "sideEffects": [
@@ -48,7 +52,7 @@
   ],
   "scripts": {
     "build": "vite build",
-    "check": "pnpm lint && pnpm build",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "format": "pnpm run format:scripts && pnpm run format:styles",
     "format:scripts": "eslint . --cache --fix",
     "format:styles": "stylelint \"**/*.{css,scss,vue}\" --cache --allow-empty-input --fix",
@@ -57,9 +61,12 @@
     "lint:scripts": "eslint . --cache",
     "lint:styles": "stylelint \"**/*.{css,scss,vue}\" --cache --allow-empty-input",
     "prepare": "pnpm run hooks:install",
-    "release": "bumpp"
+    "release": "bumpp",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@nuxt/kit": "^4.4.8",
     "@rhapsodic/bem-classnames-vue": "2.1.0"
   },
   "peerDependencies": {
@@ -94,6 +101,7 @@
     "vite": "^7.3.6",
     "vite-plugin-dts": "^5.0.3",
     "vite-plugin-lib-inject-css": "^2.2.2",
+    "vitest": "^4.1.10",
     "vue": "^3.5.39"
   },
   "publishConfig": {

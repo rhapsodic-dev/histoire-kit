@@ -51,6 +51,60 @@ export default defineHistoireKitNuxtConfig(defaults => ({
 The callback result is used as the final configuration, so every default can be extended, replaced,
 or removed.
 
+### Nuxt layer story discovery
+
+A product can discover stories and optimizer entries from every layer resolved by its own
+`nuxt.config.ts`:
+
+```ts
+import { defineHistoireKitNuxtConfig } from '@rhapsodic/histoire-kit/config/nuxt';
+
+export default await defineHistoireKitNuxtConfig({
+  discoverNuxtLayerStories: true,
+  setupFile: '/.histoire/setup.ts',
+  theme: {
+    title: 'My Project',
+  },
+});
+```
+
+The explicit `discoverNuxtLayerStories: true` option enables story discovery from resolved Nuxt
+layers. The kit loads `nuxt.config.ts` from the current working directory without preparing Nuxt,
+excludes the root application from the resolved layer list, and uses these defaults:
+
+- root stories: `app/**/*.story.vue`;
+- stories inside every resolved layer: `app/**/*.story.vue`;
+- optional layer optimizer entry: `histoire.optimize.ts`;
+- the Histoire `setupFile`, normalized as a root optimizer entry.
+
+Local filesystem layers and installed package layers work the same way because discovery uses each
+layer's resolved `cwd`. Use `storyMatch` and `setupFile` for root configuration. Use
+`discoverNuxtLayerStories.layerStoryMatch` and `discoverNuxtLayerStories.layerOptimizeEntry` for
+layer conventions, and set `discoverNuxtLayerStories.layerOptimizeEntry: false` to disable
+optimizer-entry discovery. The standalone
+`resolveNuxtLayerHistoireConfig` export remains available from
+`@rhapsodic/histoire-kit/config/nuxt-layers` for advanced composition, including its
+`rootStoryMatch` option.
+
+Pass an options object instead of `true` only when the defaults need adjustment. For example,
+`discoverNuxtLayerStories: { cwd: '/another/project' }` overrides automatic root discovery when
+Histoire is started outside the product directory.
+
+#### Reusable UI layers
+
+A reusable Nuxt UI layer provides Histoire stories by colocating `*.story.vue` files under its
+`app` directory. Its own Histoire configuration can continue to use the ordinary root story glob.
+When its stories need dependencies pre-bundled by Vite, the layer can add an optimizer entry:
+
+```ts
+// histoire.optimize.ts
+import 'third-party-package-used-by-layer-stories';
+```
+
+The optimizer entry belongs to the layer because the layer owns those story dependencies. Products
+then discover it automatically and remain independent of the layer's package name, filesystem
+location, dependencies, and internal component paths.
+
 ## Setup
 
 Create a small project-owned setup file:

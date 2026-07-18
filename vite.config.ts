@@ -23,6 +23,7 @@ export default defineConfig({
         'config/index': fileURLToPath(new URL('src/config/index.ts', import.meta.url)),
         'config/vue': fileURLToPath(new URL('src/config/vue.ts', import.meta.url)),
         'config/nuxt': fileURLToPath(new URL('src/config/nuxt.ts', import.meta.url)),
+        'config/nuxt-layers': fileURLToPath(new URL('src/config/nuxt-layers.ts', import.meta.url)),
       },
       formats: ['es'],
     },
@@ -30,8 +31,11 @@ export default defineConfig({
       external: [
         '@histoire/plugin-nuxt',
         '@histoire/plugin-vue',
+        '@nuxt/kit',
         '@rhapsodic/bem-classnames-vue',
         'histoire',
+        'node:fs',
+        'node:path',
         'vue',
       ],
       output: {
