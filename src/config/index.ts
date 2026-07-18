@@ -6,6 +6,12 @@ export type HistoireConfigCustomizer = HistoireUserConfig
 
 export function createHistoireKitConfigDefaults(): HistoireUserConfig {
   return {
+    defaultStoryProps: {
+      layout: {
+        type: 'single',
+        iframe: true,
+      },
+    },
     outDir: 'histoire-static',
     setupFile: '/.histoire/setup.ts',
     storyMatch: ['app/**/*.story.vue'],
