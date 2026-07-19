@@ -31,6 +31,11 @@ export function createHistoireKitConfigDefaults(): HistoireUserConfig {
         primary: { ...defaultColors.orange },
       },
     },
+    vite: {
+      optimizeDeps: {
+        include: ['@rhapsodic/histoire-kit/setup'],
+      },
+    },
   };
 }
 

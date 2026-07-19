@@ -34,7 +34,8 @@ export default defineHistoireKitNuxtConfig({
 
 The preset uses Histoire's own configuration merge behavior: local values override defaults, nested
 objects are merged, and ordinary local arrays replace defaults. Histoire merges its `plugins` array
-by plugin name. For complete control, use a callback:
+by plugin name. The shared setup entry is pre-optimized so loading it does not restart story
+collection. For complete control, use a callback:
 
 ```ts
 export default defineHistoireKitNuxtConfig(defaults => ({

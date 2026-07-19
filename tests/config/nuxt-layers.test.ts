@@ -163,7 +163,9 @@ describe('resolveNuxtLayerHistoireConfig', () => {
         title: 'Product',
       },
     });
-    const viteConfig = typeof config.vite === 'function' ? undefined : config.vite;
+    const viteConfig = typeof config.vite === 'function'
+      ? await config.vite({}, { command: 'serve', mode: 'test' })
+      : config.vite;
 
     expect(config.storyMatch).toEqual([
       'stories/**/*.story.vue',
@@ -175,6 +177,7 @@ describe('resolveNuxtLayerHistoireConfig', () => {
       '.histoire/setup.ts',
       'stories/**/*.story.vue',
     ]);
+    expect(viteConfig?.optimizeDeps?.include).toContain('@rhapsodic/histoire-kit/setup');
     expect(config.plugins).toHaveLength(2);
     expect(mocks.loadNuxtConfig).toHaveBeenCalledWith({
       cwd: process.cwd(),
