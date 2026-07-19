@@ -14,7 +14,16 @@ export function createHistoireKitConfigDefaults(): HistoireUserConfig {
     },
     outDir: 'histoire-static',
     setupFile: '/.histoire/setup.ts',
-    storyMatch: ['app/**/*.story.vue'],
+    storyIgnored: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.playground/.nuxt/**',
+      '**/.playground/.output/**',
+    ],
+    storyMatch: [
+      '.playground/.histoire/**/*.story.vue',
+      'app/**/*.story.vue',
+    ],
     theme: {
       title: 'Rhapsodic',
       colors: {

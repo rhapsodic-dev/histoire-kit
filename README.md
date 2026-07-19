@@ -25,10 +25,6 @@ Use the framework-specific preset and pass ordinary Histoire configuration as an
 import { defineHistoireKitNuxtConfig } from '@rhapsodic/histoire-kit/config/nuxt';
 
 export default defineHistoireKitNuxtConfig({
-  storyMatch: [
-    '.playground/.histoire/**/*.story.vue',
-    'app/**/*.story.vue',
-  ],
   setupFile: '/.playground/.histoire/setup.ts',
   theme: {
     title: 'Rhapsodic UI',
@@ -72,7 +68,7 @@ The explicit `discoverNuxtLayerStories: true` option enables story discovery fro
 layers. The kit loads `nuxt.config.ts` from the current working directory without preparing Nuxt,
 excludes the root application from the resolved layer list, and uses these defaults:
 
-- root stories: `app/**/*.story.vue`;
+- root stories: `.playground/.histoire/**/*.story.vue` and `app/**/*.story.vue`;
 - stories inside every resolved layer: `app/**/*.story.vue`;
 - optional layer optimizer entry: `histoire.optimize.ts`;
 - the Histoire `setupFile`, normalized as a root optimizer entry.
