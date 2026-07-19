@@ -8,6 +8,10 @@ import { resolveNuxtLayerHistoireConfig } from '../../src/config/nuxt-layers';
 
 type LoadNuxtConfig = typeof import('@nuxt/kit').loadNuxtConfig;
 type NuxtConfig = Awaited<ReturnType<LoadNuxtConfig>>;
+type MockNuxtLayer = string | {
+  directory: string;
+  name?: string;
+};
 
 const mocks = vi.hoisted(() => ({
   existsSync: vi.fn<(path: PathLike) => boolean>(),
@@ -22,9 +26,14 @@ vi.mock('node:fs', () => ({
   existsSync: mocks.existsSync,
 }));
 
-function mockNuxtLayers(...layerDirectories: string[]): void {
+function mockNuxtLayers(...layers: MockNuxtLayer[]): void {
   mocks.loadNuxtConfig.mockResolvedValue({
-    _layers: layerDirectories.map((cwd) => ({ cwd })),
+    _layers: layers.map((layer) => (typeof layer === 'string'
+      ? { cwd: layer }
+      : {
+          cwd: layer.directory,
+          meta: layer.name ? { name: layer.name } : undefined,
+        })),
   } as unknown as NuxtConfig);
 }
 
@@ -151,6 +160,109 @@ describe('resolveNuxtLayerHistoireConfig', () => {
     ]);
   });
 
+  it('prefixes layer stories without prefixing root stories', async () => {
+    mockNuxtLayers(
+      '/product',
+      {
+        directory: '/product/layers/local-ui',
+        name: 'Local UI',
+      },
+      '/shared/forms',
+    );
+
+    const config = await resolveNuxtLayerHistoireConfig({
+      cwd: '/product',
+      prefixLayerStories: true,
+    });
+    const treeFile = config.tree?.file;
+
+    expect(treeFile).toBeTypeOf('function');
+    expect(treeFile?.({
+      path: 'app/components/button/button.story.vue',
+      title: 'Buttons/Button',
+    })).toEqual(['Buttons', 'Button']);
+    expect(treeFile?.({
+      path: 'layers/local-ui/app/components/button/button.story.vue',
+      title: 'Buttons/Button',
+    })).toEqual(['LOCAL UI', 'Buttons', 'Button']);
+    expect(treeFile?.({
+      path: '../shared/forms/app/components/input/input.story.vue',
+      title: 'Forms/Input',
+    })).toEqual(['FORMS', 'Forms', 'Input']);
+  });
+
+  it('does not apply the root prefix to layers, external files, or generated plugin stories', async () => {
+    mockNuxtLayers('/product', '/product/layers/local-ui');
+
+    const config = await resolveNuxtLayerHistoireConfig({
+      cwd: '/product',
+      rootStoryPrefix: 'Processor',
+    });
+    const treeFile = config.tree?.file;
+
+    expect(treeFile?.({
+      path: '.playground/.histoire/overview.story.vue',
+      title: 'Overview',
+    })).toEqual(['Processor', 'Overview']);
+    expect(treeFile?.({
+      path: 'layers/local-ui/app/components/button/button.story.vue',
+      title: 'Buttons/Button',
+    })).toEqual(['Buttons', 'Button']);
+    expect(treeFile?.({
+      path: '../other-project/example.story.vue',
+      title: 'Example',
+    })).toEqual(['Example']);
+    expect(treeFile?.({
+      path: 'node_modules/.histoire/plugins/nuxt/client.story.js',
+      title: 'Nuxt',
+    })).toEqual(['Nuxt']);
+  });
+
+  it('composes prefixes with a custom tree file resolver', async () => {
+    mockNuxtLayers('/product', {
+      directory: '/product/layers/local-ui',
+      name: 'Local UI',
+    });
+
+    const config = await resolveNuxtLayerHistoireConfig({
+      cwd: '/product',
+      prefixLayerStories: true,
+      rootStoryPrefix: 'Product',
+      treeFile: (file) => ['Components', file.title],
+    });
+    const treeFile = config.tree?.file;
+
+    expect(treeFile?.({
+      path: 'app/components/button/button.story.vue',
+      title: 'Button',
+    })).toEqual(['Product', 'Components', 'Button']);
+    expect(treeFile?.({
+      path: 'layers/local-ui/app/components/button/button.story.vue',
+      title: 'Button',
+    })).toEqual(['LOCAL UI', 'Components', 'Button']);
+  });
+
+  it('preserves the built-in path tree strategy', async () => {
+    mockNuxtLayers('/product', '/product/layers/local-ui');
+
+    const config = await resolveNuxtLayerHistoireConfig({
+      cwd: '/product',
+      prefixLayerStories: true,
+      rootStoryPrefix: 'Product',
+      treeFile: 'path',
+    });
+    const treeFile = config.tree?.file;
+
+    expect(treeFile?.({
+      path: 'app/components/button/button.story.vue',
+      title: 'Button',
+    })).toEqual(['Product', 'app', 'components', 'button', 'Button']);
+    expect(treeFile?.({
+      path: 'node_modules/.histoire/plugins/nuxt/client.story.js',
+      title: 'Nuxt',
+    })).toEqual(['plugins', 'Nuxt']);
+  });
+
   it('loads layers and merges overrides through one defineHistoireKitNuxtConfig call', async () => {
     mockNuxtLayers('/product', '/product/layers/local-ui');
     mocks.existsSync.mockReturnValue(false);
@@ -185,6 +297,36 @@ describe('resolveNuxtLayerHistoireConfig', () => {
         _prepare: false,
       },
     });
+  });
+
+  it('composes story prefixes with tree customization through the Nuxt helper', async () => {
+    mockNuxtLayers('/product', {
+      directory: '/product/layers/local-ui',
+      name: 'Local UI',
+    });
+    mocks.existsSync.mockReturnValue(false);
+
+    const config = await defineHistoireKitNuxtConfig({
+      discoverNuxtLayerStories: {
+        cwd: '/product',
+        prefixLayerStories: true,
+        rootStoryPrefix: 'Product',
+      },
+      tree: {
+        file: (file) => ['Components', file.title],
+      },
+    });
+    const treeFile = config.tree?.file;
+
+    expect(treeFile).toBeTypeOf('function');
+    expect(typeof treeFile === 'function' && treeFile({
+      path: 'app/components/button/button.story.vue',
+      title: 'Button',
+    })).toEqual(['Product', 'Components', 'Button']);
+    expect(typeof treeFile === 'function' && treeFile({
+      path: 'layers/local-ui/app/components/button/button.story.vue',
+      title: 'Button',
+    })).toEqual(['LOCAL UI', 'Components', 'Button']);
   });
 
   it('preserves synchronous callback customization when layer discovery is not enabled', () => {

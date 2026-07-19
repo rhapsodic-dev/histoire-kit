@@ -57,7 +57,10 @@ A product can discover stories and optimizer entries from every layer resolved b
 import { defineHistoireKitNuxtConfig } from '@rhapsodic/histoire-kit/config/nuxt';
 
 export default await defineHistoireKitNuxtConfig({
-  discoverNuxtLayerStories: true,
+  discoverNuxtLayerStories: {
+    prefixLayerStories: true,
+    rootStoryPrefix: 'Product',
+  },
   setupFile: '/.histoire/setup.ts',
   theme: {
     title: 'My Project',
@@ -73,6 +76,12 @@ excludes the root application from the resolved layer list, and uses these defau
 - stories inside every resolved layer: `app/**/*.story.vue`;
 - optional layer optimizer entry: `histoire.optimize.ts`;
 - the Histoire `setupFile`, normalized as a root optimizer entry.
+
+`prefixLayerStories: true` places every discovered layer's stories under its uppercased Nuxt layer
+name, falling back to the uppercased layer directory name. `rootStoryPrefix` independently places
+only stories owned by the current project under the supplied prefix. It does not prefix
+discovered-layer stories or Histoire's generated plugin stories. Both options are disabled by
+default and preserve a local `tree.file` strategy.
 
 Local filesystem layers and installed package layers work the same way because discovery uses each
 layer's resolved `cwd`. Use `storyMatch` and `setupFile` for root configuration. Use

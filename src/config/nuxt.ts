@@ -10,7 +10,7 @@ import type { ResolveNuxtLayerHistoireConfigOptions } from './nuxt-layers';
 
 type NuxtLayerStoryDiscoveryOptions = Omit<
   ResolveNuxtLayerHistoireConfigOptions,
-  'cwd' | 'rootStoryMatch' | 'setupFile'
+  'cwd' | 'rootStoryMatch' | 'setupFile' | 'treeFile'
 > & {
   cwd?: string;
 };
@@ -48,6 +48,8 @@ async function defineHistoireKitNuxtLayerStoryConfig(
   const {
     layerOptimizeEntry,
     layerStoryMatch,
+    prefixLayerStories,
+    rootStoryPrefix,
   } = layerOptions;
   const configuredRootStories = customizer.storyMatch ?? defaults.storyMatch;
   const configuredSetupFile = customizer.setupFile ?? defaults.setupFile;
@@ -55,15 +57,26 @@ async function defineHistoireKitNuxtLayerStoryConfig(
     cwd: layerOptions.cwd ?? process.cwd(),
     layerOptimizeEntry,
     layerStoryMatch,
+    prefixLayerStories,
     rootStoryMatch: configuredRootStories,
+    rootStoryPrefix,
     setupFile: normalizeSetupEntry(configuredSetupFile),
+    treeFile: customizer.tree?.file,
   });
   const layerDefaults = applyHistoireConfigCustomizer(defaults, layers);
-
-  return applyHistoireConfigCustomizer(layerDefaults, {
+  const config = applyHistoireConfigCustomizer(layerDefaults, {
     ...customizer,
     storyMatch: layers.storyMatch,
   });
+
+  if (layers.tree?.file) {
+    config.tree = {
+      ...config.tree,
+      file: layers.tree.file,
+    };
+  }
+
+  return config;
 }
 
 export function defineHistoireKitNuxtConfig(
