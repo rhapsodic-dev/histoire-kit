@@ -17,8 +17,12 @@ export function createHistoireKitConfigDefaults(): HistoireUserConfig {
     storyIgnored: [
       '**/node_modules/**',
       '**/dist/**',
+      '**/.codex/**',
+      '**/.git/**',
+      '**/.nuxt/**',
       '**/.playground/.nuxt/**',
       '**/.playground/.output/**',
+      '**/histoire-static/**',
     ],
     storyMatch: [
       '.playground/.histoire/**/*.story.vue',
